@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+	<title>Home Page</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+	<link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/css/bootstrap.min.css"
+	      th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"
+	      rel="stylesheet" media="screen" />
+
+	<script src="http://cdn.jsdelivr.net/webjars/jquery/2.2.3/jquery.min.js"
+	        th:src="@{/webjars/jquery/2.2.3/jquery.min.js}"></script>
+
+	<script src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/js/bootstrap.min.js"
+	        th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+
+	<script src="http://cdn.jsdelivr.net/webjars/bootbox/4.4.0/bootbox.js"
+	        th:src="@{/webjars/bootbox/4.4.0/bootbox.js}"></script>
+
+	<script src="../static/js/gene-searcher.js"
+	        th:src="@{/js/gene-searcher.js}"></script>
+
+	<link href="../static/css/gene-searcher.css"
+	      th:href="@{/css/gene-searcher.css}" rel="stylesheet" media="screen"/>
+</head>
+<body>
+<div class="container">
+	<div class="row center-block text-left">
+		<form action="#" th:action="@{/}" th:object="${searchBean}" method="POST" class="form-vertical">
+			<fieldset class="form-group">
+				<legend>Search Genes</legend>
+				<div class="form-group">
+					<label th:for="'name'" class="col-sm-2 control-label">Name</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" th:field="*{q}" placeholder="Name" />
+					</div>
+				</div>
+			</fieldset>
+			<div class="row">&nbsp;</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10 text-center">
+					<input class="btn btn-warning" type="reset" value="Reset" />
+					<button type="submit" class="btn btn-warning">Search Genes</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="row center-block" th:if="${resultTitles}">
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th th:each="title: ${resultTitles}" th:text="${title}">title</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="valueList : ${resultValues}">
+					<td th:each="value: ${valueList}" th:text="${value}">value</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</body>
+</html>

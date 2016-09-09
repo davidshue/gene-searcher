@@ -1,0 +1,10 @@
+.container {
+	background-color: lightblue;
+	font-family: 'MuseoSlabHeavy',Arial,sans-serif;
+}
+
+a.disabled {
+	pointer-events: none;
+	cursor: default;
+	background-color: grey !important;
+}
