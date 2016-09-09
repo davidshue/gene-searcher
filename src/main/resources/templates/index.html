@@ -6,62 +6,271 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-	<link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/css/bootstrap.min.css"
+<!--	<link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/css/bootstrap.min.css"
 	      th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"
-	      rel="stylesheet" media="screen" />
+	      rel="stylesheet" media="screen" />-->
 
 	<script src="http://cdn.jsdelivr.net/webjars/jquery/2.2.3/jquery.min.js"
 	        th:src="@{/webjars/jquery/2.2.3/jquery.min.js}"></script>
 
+<!--
 	<script src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/js/bootstrap.min.js"
 	        th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+-->
 
-	<script src="http://cdn.jsdelivr.net/webjars/bootbox/4.4.0/bootbox.js"
-	        th:src="@{/webjars/bootbox/4.4.0/bootbox.js}"></script>
+<!--	<script src="http://cdn.jsdelivr.net/webjars/bootbox/4.4.0/bootbox.js"
+	        th:src="@{/webjars/bootbox/4.4.0/bootbox.js}"></script>-->
 
-	<script src="../static/js/gene-searcher.js"
-	        th:src="@{/js/gene-searcher.js}"></script>
+<!--	<script src="../static/js/gene-searcher.js"
+	        th:src="@{/js/gene-searcher.js}"></script>-->
+
+	<script src="../static/js/jquery-ui-1.10.3.custom.min.js" th:src="@{/js/jquery-ui-1.10.3.custom.min.js}"></script>
+	<script src="../static/js/jquery.dataTables.min.js" th:src="@{/js/jquery.dataTables.min.js}"></script>
+<!--	<script src="../static/js/common-1.1.5.js" th:src="@{/js/common-1.1.5.js}"></script>-->
+	<!--[if gte IE 9]><!-->
+	<script src="../static/js/d3.v3.min.js" th:src="@{/js/d3.v3.min.js}"></script>
+	<!--<![endif]-->
 
 	<link href="../static/css/gene-searcher.css"
 	      th:href="@{/css/gene-searcher.css}" rel="stylesheet" media="screen"/>
+
+	<link rel="stylesheet" href="../static/css/base.css" th:href="@{/css/base.css}"/>
+	<link rel="stylesheet" href="../static/css/common-1.1.3.css" th:href="@{/css/common-1.1.3.css}"/>
+
+	<link rel="shortcut icon" href="../static/img/favicon.ico" th:href="@{/img/favicon.ico}" type="image/x-icon" />
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../static/img/touch-icon-ipad-retina.png" th:href="@{/img/touch-icon-ipad-retina.png}"/>
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="../static/img/touch-icon-iphone-retina.png" th:href="@{/img/touch-icon-iphone-retina.png}"/>
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../static/img/touch-icon-ipad.png" th:href="@{/img/touch-icon-ipad.png}"/>
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="../static/img/touch-icon-iphone.png" th:href="@{/img/touch-icon-iphone.png}"/>
+
 </head>
-<body>
-<div class="container">
-	<div class="row center-block text-left">
-		<form action="#" th:action="@{/}" th:object="${searchBean}" method="POST" class="form-vertical">
-			<fieldset class="form-group">
-				<legend>Search Genes</legend>
-				<div class="form-group">
-					<label th:for="'name'" class="col-sm-2 control-label">Name</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" th:field="*{q}" placeholder="Name" />
-					</div>
-				</div>
-			</fieldset>
-			<div class="row">&nbsp;</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10 text-center">
-					<input class="btn btn-warning" type="reset" value="Reset" />
-					<button type="submit" class="btn btn-warning">Search Genes</button>
-				</div>
+<body id="search-page">
+<div class="wrapper">
+	<div class="header-wrapper">
+
+		<div id="about" class="icon-small-button-wrapper">
+			<button type="button" class="btn-small-grey" id="btn-about">
+				<span class="button-label">About</span>
+				<span class="button-image"></span>
+				<span class="button-transition"></span>
+			</button>
+		</div>
+
+		<div class="header-content">
+			<a href="https://www.invitae.com/" target="_blank" class="logo-invitae" data-tracking="outbound" data-label="InVitae"></a>
+			<a href="/" class="logo-clinvitae"></a>
+			<div class="beta">BETA</div>
+			<form action="#" th:action="@{/}" th:object="${searchBean}" method="POST">
+			<div id="search-box">
+
+				<input class="main-search" th:field="*{q}" type="text" placeholder="Search for genes" autocomplete="off" />
+				<button id="btn-search" type="submit"><span class="button-image"></span></button>
+
 			</div>
-		</form>
+			</form>
+			<div id="no-search-results-text">No results</div>
+		</div>
 	</div>
 
-	<div class="row center-block" th:if="${resultTitles}">
-		<table class="table table-striped table-bordered">
-			<thead>
-				<tr>
-					<th th:each="title: ${resultTitles}" th:text="${title}">title</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="valueList : ${resultValues}">
-					<td th:each="value: ${valueList}" th:text="${value}">value</td>
-				</tr>
-			</tbody>
-		</table>
+	<div class="content-wrapper" th:if="${resultTitles}">
+		<div id="search-results">
+			<div id="search-results-content">
+				<!-- required for datatables  -->
+				<table id="search-results-table">
+					<thead>
+						<tr>
+							<th th:each="title: ${resultTitles}" th:text="${title}">title</th>
+						</tr>
+					</thead>
+					<tbody>
+					<tr th:each="valueList : ${resultValues}">
+						<td th:each="value: ${valueList}" th:text="${value}">value</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div id="default-content">
+			<p class="intro"><span class="logo-text"><em>CL</em>INVITAE</span> is a database of clinically-observed genetic variants aggregated from
+				public sources, operated and made freely available by INVITAE.</p>
+			<div class="download">
+				<div><span id="variant-count">209170</span> Variants. 7881 Genes.
+					<a href="/download" data-tracking="download">Download the Database.</a></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="footer-wrapper">
+		<div class="footer-content">
+			<div class="left-column">
+				<h3>Join the Open Access Revolution</h3>
+				<p>INVITAE is a supporter of Free the Data!, a grassroots movement where patients, physicians, and researchers are
+					contributing their genetic variants to support genetics research, advance the understanding of disease, and enhance
+					treatment options.</p>
+				<p>If you're a patient or physician interested in getting involved, visit them at
+					<a href="http://www.free-the-data.org" title="http://www.free-the-data.org" target="_blank" data-tracking="outbound" data-label="Free-the-data">free-the-data.org</a>.</p>
+				<p>If you're part of a clinical or academic laboratory who believes in open access, please contact us at
+					<a href="mailto:clinical@invitae.com">clinical@invitae.com</a> or 1-800-436-3037.</p>
+			</div>
+			<div class="center-column">
+				<h3>Current Database Sources</h3>
+				<ul>
+					<li><a href="http://www.invitae.com/" title="http://www.invitae.com/" target="_blank" data-tracking="outbound" data-label="Invitae">Invitae</a></li>
+					<li><a href="http://www.ncbi.nlm.nih.gov/clinvar/" title="http://www.ncbi.nlm.nih.gov/clinvar/" target="_blank" data-tracking="outbound" data-label="ClinVar">ClinVar</a></li>
+					<li><a href="http://genetics.emory.edu/egl/emvclass/emvclass.php" title="http://genetics.emory.edu/egl/emvclass/emvclass.php" target="_blank" data-tracking="outbound" data-label="EmvClass">Emory Genetics Laboratory Variant Classification Catalog</a></li>
+					<li><a href="http://www.arup.utah.edu/database/index.php" title="http://www.arup.utah.edu/database/index.php" target="_blank" data-tracking="outbound" data-label="ARUP">ARUP Mutation Databases</a></li>
+					<li><a href="https://www.carverlab.org/database" title="https://www.carverlab.org/database" target="_blank" data-tracking="outbound" data-label="Carver">Carver Mutation Database</a></li>
+					<li><a href="http://www.kconfab.org/index.shtml" title="http://www.kconfab.org/index.shtml" target="_blank" data-tracking="outbound" data-label="kConFab">Kathleen Cunningham Foundation Consortium for Research into Familial Breast Cancer</a></li>
+				</ul>
+			</div>
+			<div class="right-column">
+				<h3>Our commitment to Patient Care</h3>
+				<p> INVITAE is committed to making our clinically-observed variants publicly available. We have submitted variants
+					to ClinVar and <span class="logo-text"><em>CL</em>INVITAE</span> and will continue to do so on a routine basis.
+				</p>
+			</div>
+		</div>
+		<div id="footer-links">
+			<ul>
+				<li>&#169; INVITAE. All rights reserved</li>
+				<li><a href="https://www.invitae.com/en/privacy/" target="_blank" data-tracking="outbound" data-label="Invitae">Privacy</a></li>
+				<li><a href="https://www.invitae.com/en/terms/" target="_blank" data-tracking="outbound" data-label="Invitae">Terms of use</a></li>
+			</ul>
+		</div>
 	</div>
 </div>
+
+
+<div id="modal-screen"></div>
+<div id="modal">
+	<div class="modal-wrapper">
+		<div class="modal-header">
+			<div id="btn-close-modal"></div>
+			<div id="modal-title"></div>
+		</div>
+		<div class="modal-content-wrapper">
+			<div id="modal-content">
+				<p>Knowledge is more valuable when shared. By contributing this resource to the wider research community
+					we want to increase the quality and utility of genetic data available to all.</p>
+				<p><span class="logo-text"><em>CL</em>INVITAE</span> is a database of clinically-observed genetic variants aggregated from public sources.
+					It is operated and made freely available by INVITAE.</p>
+
+				<h3>Current Database Sources</h3>
+				<p>To make <span class="logo-text"><em>CL</em>INVITAE</span> as informative as possible, we aggregate the data from multiple public databases.
+					Our goal is to simplify the search for clinically- interpreted variants by creating a single
+					unified resource. We want clinicians and researchers to save time, compare variants across
+					multiple platforms, and fully utilize the available data.</p>
+				<ul>
+					<li><a href="http://www.invitae.com/" title="http://www.invitae.com/" target="_blank" data-tracking="outbound" data-label="Invitae">Invitae</a></li>
+					<li><a href="http://www.ncbi.nlm.nih.gov/clinvar/" title="http://www.ncbi.nlm.nih.gov/clinvar/" target="_blank" data-tracking="outbound" data-label="ClinVar">ClinVar</a></li>
+					<li><a href="http://genetics.emory.edu/egl/emvclass/emvclass.php" title="http://genetics.emory.edu/egl/emvclass/emvclass.php" target="_blank" data-tracking="outbound" data-label="EmvClass">Emory Genetics Laboratory Variant Classification Catalog</a></li>
+					<li><a href="http://www.arup.utah.edu/database/index.php" title="http://www.arup.utah.edu/database/index.php" target="_blank" data-tracking="outbound" data-label="ARUP">ARUP Mutation Databases</a></li>
+					<li><a href="https://www.carverlab.org/database" title="https://www.carverlab.org/database" target="_blank" data-tracking="outbound" data-label="Carver">Carver Mutation Database</a></li>
+					<li><a href="http://www.kconfab.org/index.shtml" title="http://www.kconfab.org/index.shtml" target="_blank" data-tracking="outbound" data-label="kConFab">Kathleen Cunningham Foundation Consortium for Research into Familial Breast Cancer</a></li>
+				</ul>
+				<p>If you are part of a laboratory interested in getting involved with <span class="logo-text"><em>CL</em>INVITAE</span>, please contact
+					<a href="mailto:clinical@invitae.com">clinical@invitae.com</a> or call 1-800-436-3037 for further information.</p>
+
+				<h3>Patient Consent</h3>
+				<p>All variants interpreted by INVITAE have been added to public databases with patient consent.
+					Patient consent to contribute their de-identified variants to public databases was obtained
+					during the test ordering process.</p>
+
+				<h3>Variant Interpretations</h3>
+				<p>The database reports variant interpretations as provided by the original source, with no
+					consolidation of results, and always has a link out to the original reference.</p>
+				<p>While we display the variants and interpretations as originally reported in the variant databases,
+					some variants in the same genes have been reported on different transcripts. Whenever possible,
+					<span class="logo-text"><em>CL</em>INVITAE</span> will attempt to map all variants in a particular gene to a common transcript to aid in
+					viewing and organizing the variants. However, to aid in variant searches, we will also continue
+					to report the original mapping information.</p>
+				<p>All interpretations were performed by the original submitters and have not been modified in any way.
+					As such, there might be discordant interpretations for the same variant from different archives.
+					For further information or to request a review of the variant, please contact the submitter of
+					the original reference.</p>
+
+				<h3>Data Accessibility</h3>
+				<p>The entirety of the <span class="logo-text"><em>CL</em>INVITAE</span> database, as well as individual search results, is freely
+					available to download in a zipped, TSV-formatted file that will be readable by most text
+					editors and spreadsheet software. </p>
+				<ul><li><a href="/download" data-tracking="download">Download the Database</a></li></ul>
+				<p>We also provide a REST API for integration into third-party applications.</p>
+
+				<h3>Contact</h3>
+				<p>We invite feedback and comments to help us improve this site. Contact us at
+					<a href="mailto:clinical@invitae.com">clinical@invitae.com</a> or 1-800-436-3037.</p>
+
+				<h3>Disclaimer</h3>
+				<p><span class="logo-text"><em>CL</em>INVITAE</span> is not intended for direct diagnostic use or medical decision-making.
+					If you have any health questions about the information contained on this website,
+					please contact a medical professional.</p>
+				<p>Variant interpretations are not static as they are based on the current understanding of the
+					variant at the time it was observed in a patient or in the literature. Any reported interpretation
+					may not be up-to-date, and some information may not be reported. Many interpretations will
+					change over time as more information about the variant becomes available. If you have any
+					questions about a variant interpretation or would like use any variant interpretations for
+					publication purposes, please contact the submitter of the original reference.</p>
+				<br />
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="icon-small-button-wrapper">
+				<button type="button" class="btn-small-submit" id="modal-button-primary">
+					<span class="button-label"></span>
+					<span class="button-image"></span>
+					<span class="button-transition"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="variant-screen"></div>
+<div id="variant">
+	<div class="variant-wrapper">
+		<div class="variant-header">
+			<div class="btn-close-variant"></div>
+			<div id="variant-details">
+				<div class="detail detail-gene">
+					<label>Gene</label>
+					<span id="variant-gene"></span>
+				</div>
+				<div class="detail detail-nucleotide">
+					<label>Nucleotide Change</label>
+					<span id="variant-nucleotide-change"></span>
+				</div>
+				<div class="detail detail-classification">
+					<label>Reported Classification</label>
+					<span id="variant-reported-classification"></span>
+				</div>
+				<div class="detail detail-source">
+					<label>Source</label>
+					<a href="https://www.invitae.com/" target="_blank" id="source-logo-invitae"></a>
+				</div>
+			</div>
+		</div>
+		<div class="variant-content-wrapper">
+			<label>Description</label>
+			<div id="variant-content">
+				<p id="variant-description"></p>
+			</div>
+		</div>
+		<div class="variant-footer">
+			<div class="icon-small-button-wrapper">
+				<button type="button" class="btn-small-submit">
+					<span class="button-label">CLOSE</span>
+					<span class="button-image"></span>
+					<span class="button-transition"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="spinner-screen"></div>
+<div id="spinner"><div id="spinner-image"></div></div>
 </body>
 </html>

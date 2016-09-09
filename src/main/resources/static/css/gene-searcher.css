@@ -8,3 +8,30 @@ a.disabled {
 	cursor: default;
 	background-color: grey !important;
 }
+
+.main-search {
+	float: left;
+	border: none;
+	border-top: 1px solid #11ae96;
+	border-left: 1px solid #11ae96;
+	border-bottom: 2px solid #11ae96;
+	color: #333;
+	background: #fff;
+	height: 34px;
+	width: 444px;
+	padding-left: 8px;
+	padding-top: 4px;
+	padding-top: 6px\9;
+	font-family: 'ScalaSansWeb';
+	line-height: 20px;
+	font-size: 18px;
+	z-index: 1;
+}
+
+#btn-search {
+	display: inline-block !important;
+}
+
+#search-results #search-results-content {
+	display: inline-block !important;
+}

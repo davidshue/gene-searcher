@@ -37,7 +37,7 @@ class DataBootstrapper {
 	}
 
 	Tuple2<List<String>, List<List<String>>> getGenePage(String gene) {
-		List<Map<String, String>> geneData = data[gene]
+		List<Map<String, String>> geneData = data[gene?.toUpperCase()]
 		if (!geneData) return new Tuple2<>([], [])
 
 		def result = new Tuple2<>([], [].withDefault{[]})
@@ -55,20 +55,15 @@ class DataBootstrapper {
 	}
 
 	List<Map<String, String>> getGeneData(String gene) {
-		return data[gene]
+		return data[gene?.toUpperCase()]
 	}
 
 	List<String> searchGenes(String genes) {
-		def output = []
 		if (!genes) {
-			return output
+			return []
 		}
-		data.keySet().inject(output){result, it ->
-			if (it.startsWith(genes)) {
-				result << it
-			}
-			result
-		}
-		output
+
+		return data.keySet().toList().grep{it.startsWith(genes.toUpperCase())}
+
 	}
 }
