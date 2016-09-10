@@ -6,6 +6,7 @@ $(document).ready(function(){
 			minLength: 2
 		},
 		{
+			limit: 20,
 			source: function(query, processSync, processAsync) {
 				return $.ajax({
 					url: '/api/v1/suggest',
