@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class DataBootstrapper {
-	private Map<String, List<Map<String, String>>> data = [:]
+	private Map<String, List<Map<String, String>>> data = [:].withDefault{[]}
 	@PostConstruct
 	void afterInit() {
 		def file = new ClassPathResource('/variant_results.tsv').file
@@ -24,10 +24,8 @@ class DataBootstrapper {
 
 				def gene = values[0]
 
-				def geneList = data.get(gene, [])
-
 				def attrMap = [:]
-				geneList << attrMap
+				data[gene] << attrMap
 
 				values.eachWithIndex {value, column ->
 					attrMap.put(names[column], values[column])
@@ -58,12 +56,12 @@ class DataBootstrapper {
 		return data[gene?.toUpperCase()]
 	}
 
-	List<String> searchGenes(String genes) {
+	Collection<String> searchGenes(String genes) {
 		if (!genes) {
 			return []
 		}
 
-		return data.keySet().toList().grep{it.startsWith(genes.toUpperCase())}
+		return data.keySet().grep{it.startsWith(genes.toUpperCase())}
 
 	}
 }
